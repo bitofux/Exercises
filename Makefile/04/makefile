@@ -5,15 +5,25 @@
 # $$:当前执行的进程id 
 # $* $?
 # $$转义为$
-all: f1 f2 f3 
-	@echo '$$@ = ' $@
-	@echo '$$^ = ' $^
-	@echo '$$< = ' $<
-	@echo '$$$$ = ' $$$$
+# all: f1 f2 f3 
+# 	@echo '$$@ = ' $@
+# 	@echo '$$^ = ' $^
+# 	@echo '$$< = ' $<
+# 	@echo '$$$$ = ' $$$$
+#
+# f1:
+# 	@touch f1
+# f2:
+# 	@touch f2
+# f3:
+# 	@touch f3
 
-f1:
-	@touch f1
-f2:
-	@touch f2
-f3:
-	@touch f3
+TARGET := main
+SRCS := main.c add.c
+
+$(TARGET): $(SRCS)
+	gcc $^ -o $@
+
+#清理规则
+clean:
+	rm -f $(TARGET)
