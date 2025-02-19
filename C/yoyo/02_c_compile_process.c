@@ -5,7 +5,7 @@
  * 1.预处理(cpp): 使用cpp可执行程序完成，主要处理源文件中的预处理指令和对宏的展开并删除注释 
    gcc -E 02_c_compiler_process.c -o 02_c_compiler_process.i 
    cpp 02_c_compiler_process.c -o 02_c_compiler_process.i
- * 2.编译(cc): 使用cc可执行程序完成，将预处理之后的翻译单元做语法、语义、词义的分析并做一些适当的代码优化
+ * 2.编译(cc1): 使用cc可执行程序完成，将预处理之后的翻译单元做语法、语义、词义的分析并做一些适当的代码优化
    gcc -S 02_c_compiler_process.i -o 02_c_compiler_process.s
    cc1 02_c_compiler_process.i -o 02_c_compiler_process.s
  * 3.汇编(as): 使用as可执行程序完成，将汇编指令翻译成当前cpu架构支持的机器指令
