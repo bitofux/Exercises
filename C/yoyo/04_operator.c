@@ -27,6 +27,18 @@ void sizeofOpr() {
   printf("a: %u\n", a);
 }
 
+//GNU C对于标准C的扩展 
+//typeof运算符:取出表达式的类型
+void typeofOpr(){
+  const int a = 10;
+  typeof(a) b = 20;
+  printf("b is %d\n",b);
+
+  char arr[] = "Hello";
+  typeof(arr) brr = "World";
+
+  printf("%s,%s\n",arr,brr);
+}
 /*算术运算符%:
  * 1.操作符两边的操作数必须是整型
  * 2.表达式结果的正负取决于操作符前面的操作数的符号*/
@@ -56,6 +68,8 @@ void logicOpr() {
   printf("!var_true: %d\n", !var_true);
 }
 // 自增自减运算符++ --
+// 假设操作数是a,++a这个表达式的值类别是左值a本身,类型也是a本身的类型
+// ++a这个表达式的值类别是右值,也就是临时变量,执行完成之后就释放.
 void de_incrementOpr() {
   unsigned int a = 10;
   printf("a++ = %d\n", a++); // 10 a = 11
@@ -100,6 +114,7 @@ int main() {
   /*logicOpr();*/
   /*de_incrementOpr();*/
   /*commaOpr();*/
-  conditionOpr();
+  /*conditionOpr();*/
+  typeofOpr();
   return 0;
 }
