@@ -28,6 +28,8 @@ zig-out/
 *.la
 *.a
 *.lib
+#rust
+*.toml
 
 # Executables
 *.exe
