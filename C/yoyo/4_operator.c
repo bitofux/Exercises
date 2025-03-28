@@ -112,7 +112,7 @@ int main() {
   /*arithmeticOpr();*/
   /*relationOpr();*/
   /*logicOpr();*/
-  /*de_incrementOpr();*/
+  de_incrementOpr();
   /*commaOpr();*/
   /*conditionOpr();*/
   typeofOpr();
