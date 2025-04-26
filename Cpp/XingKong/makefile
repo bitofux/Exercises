@@ -1,7 +1,7 @@
 SOURCES := $(wildcard *.cc)
 TARGETS := $(patsubst %.cc,%,$(SOURCES))
 
-CXX = g++-14
+CXX = g++
 CXXFLAGS = -std=c++11 -Wall -Wextra -Wpedantic
 
 all: $(TARGETS)
