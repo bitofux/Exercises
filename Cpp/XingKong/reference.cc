@@ -2,19 +2,19 @@
 using std::cout;
 using std::endl;
 
-//引用
+// 引用
 void test() {
 
   int a = 10;
 
-  int& ref = a;
+  int &ref = a;
   ref = 30;
 
-  cout << "a = " << a << " &a = " << &a <<  endl;
+  cout << "a = " << a << " &a = " << &a << endl;
   cout << "ref = " << ref << " &ref = " << &ref << endl;
 }
 
-int main () {
+int main() {
 
   test();
 
