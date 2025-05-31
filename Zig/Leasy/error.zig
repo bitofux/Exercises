@@ -7,7 +7,7 @@ const number_error = error{
 };
 
 //2.定义一个返回错误联合类型的函数
-fn number(num: i32) number_error!i32{
+pub fn number(num: i32) number_error!i32{
     if(num == 0) return number_error.NotFound;
     if(num < 0) return number_error.PermissionDenied;
     return num * 2;
