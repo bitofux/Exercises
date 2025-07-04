@@ -5,12 +5,11 @@
 #include <iostream>
 
 using std::cout;
-using std::endl;
 
 class human{
 public:
-  //有参构造函数
-  human(const char* name,int age);
+  //有参构造函数 编译器不会再为你添加一个无参数构造,如果还想无参构造，可以使用默认函数。
+  human(const char* name = "null",const int age = -1);
   void print();
 private:
   char m_name[20];
@@ -30,5 +29,8 @@ int main (){
   // human h1;当类中出现一个带有参数的构造函数时，编译器不会再提供一个默认的无参构造函数，不可以在用一个无参去构造对象，除非自己添加一个
   human h1{"bitofux",20};
   h1.print();
+  //使用默认值构造
+  human h2;
+  h2.print();
   return 0;
 }
