@@ -8,7 +8,7 @@ struct Book {
   char book_name[50];
 };
 
-void printBook(struct Book* book) {
+void printBook(Book* book) {
   std::cout << "book_name: " << book->book_name << ", author: " << book->author << ", year: " << book->year << ", price: " << book->price << "\n";
 }
 int main() {

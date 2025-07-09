@@ -15,7 +15,7 @@ enum Type {
   NON
 };
 
-enum Type typeToInt(const char* type_name) {
+Type typeToInt(const char* type_name) {
   if (!strcmp(type_name, "int")) {
     return INT;
   } else if (!strcmp(type_name, "float")) {
@@ -28,7 +28,7 @@ enum Type typeToInt(const char* type_name) {
 
 int main() {
   char type_name[10] = {'\0'};
-  union Bitofux b1;
+  Bitofux b1;
 
   std::cout << "*********\n";
   std::cout << "  INT  \n";
@@ -39,7 +39,7 @@ int main() {
   std::cout << "输入一个上述的类型: ";
   std::cin >> type_name;
   
-  enum Type type = typeToInt(type_name);
+  Type type = typeToInt(type_name);
   switch (type) {
     case INT:
       std::cout << "输入上述你选择类型相应的值: ";

@@ -14,35 +14,36 @@ enum Week {
 const char* typeName(enum Week week) {
   switch (week) {
     case MONDAY:
-      return "monday";
-      break;
+      return "Monday";
     case TUESDAY:
-      return "tuesday";
-      break;
+      return "Tuesday";
     case WEDNESDAY:
-      return "wednesday";
-      break;
+      return "Wednesday";
     case THURSDAY:
-      return "thursday";
-      break;
+      return "Thursday";
     case FRIDAY:
-      return "friday";
-      break;
+      return "Friday";
     case SATURDAY:
-      return "saturday";
-      break;
+      return "Saturday";
     case SUNDAY:
-      return "sunday";
-      break;
+      return "Sunday";
+    default:
+      return "Non";
   }
 }
 
 int main() {
-  size_t weekday = -1;
+  int weekday = -1;
 
-  std::cout << "请您输入星期几对应的数字(1-7): \n";
-  std::cin >> weekday;
-
+  while (true) {
+    std::cout << "请您输入星期几对应的数字(1-7): \n";
+    std::cin >> weekday;
+    if (weekday < 0 || weekday > 7) {
+      std::cout << "输入正确的数字!\n";
+      continue;
+    }
+    break;
+  }
   std::cout << typeName(static_cast<enum Week>(weekday)) << "\n";
 
   return 0;
