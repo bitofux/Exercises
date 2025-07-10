@@ -9,30 +9,29 @@
 #include <ctime>
 
 int main() {
-  FILE* fp = fopen("log.txt", "a");
-  
-  //获取当前时间
-  time_t now = time(nullptr);
-  if (now == ((time_t)(-1))) {
-    perror("time error");
-    return 1;
-  }
+    FILE *fp = fopen("log.txt", "a");
 
-  //转换时间
-  tm tm_info;
-  localtime_r(&now, &tm_info);
+    // 获取当前时间
+    time_t now = time(nullptr);
+    if (now == ((time_t)(-1))) {
+        perror("time error");
+        return 1;
+    }
 
-  char buf[64];
-  auto len = strftime(buf, sizeof buf, "%Y-%m-%d %H:%M:%S", &tm_info);
+    // 转换时间
+    tm tm_info;
+    localtime_r(&now, &tm_info);
 
-  //将buf中的数据追加到log.txt中
-  if (fwrite(buf, sizeof(char), strlen(buf), fp) != len){
-    perror("写入文件错误");
+    char buf[64];
+    auto len = strftime(buf, sizeof buf, "%Y-%m-%d %H:%M:%S", &tm_info);
+
+    // 将buf中的数据追加到log.txt中
+    if (fwrite(buf, sizeof(char), strlen(buf), fp) != len) {
+        perror("写入文件错误");
+        fclose(fp);
+        return 1;
+    }
+
+    // 关闭文件
     fclose(fp);
-    return 1;
-  }
-
-  //关闭文件
-  fclose(fp);
-  
 }
