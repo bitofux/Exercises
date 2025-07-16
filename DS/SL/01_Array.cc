@@ -88,7 +88,7 @@ public:
         --cur_;
     }
     // 元素查询返回下标
-    int find(int val) {
+    int find(int val) const {
         if (cur_ == 0) {
             return -1;
         }
