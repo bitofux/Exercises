@@ -12,7 +12,7 @@ public:
           ptr_{new int[cap_]{}} {}
 
     // 不需要拷贝构造和赋值运算符函数
-    Array(const array& other) = delete;
+    Array(const Array& other) = delete;
     Array& operator=(const Array& other) = delete;
 
     // 销毁顺序表
@@ -33,7 +33,7 @@ public:
         // 末尾增加元素
         ptr_[cur_] = val;
         // 将顺序表中的有效个数+1
-        cur_++;
+        ++cur_;
     }
     // 末尾删除元素
     void pop_back() {
@@ -41,7 +41,7 @@ public:
         if (cur_ == 0) {
             return;
         }
-        cur_--;
+        --cur_;
     }
     // 按位置增加元素(0-based 下标添加)
     void insert(int pos, int val) {
