@@ -101,6 +101,8 @@ int main() {
         std::cout << "print_fn address: " << print_fn_ptr << ", print_fn value: " << (void*)print_fn
                   << std::endl;
         std::cout << "\n";
+
+        ((void(*)(Base*))print_fn)((Base*)ptr);
     }
 
     return 0;
