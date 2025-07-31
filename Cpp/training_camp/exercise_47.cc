@@ -1,5 +1,6 @@
 // 编写一个程序，使用malloc动态分配一个整型数组的空间，允许用户输入数组的大小(不超过100)，然后输入数组的元素值，并打印数组的//内容，最后使用free释放内存
 
+#include <cstdlib>
 #include <iostream>
 
 int main() {
@@ -27,6 +28,8 @@ int main() {
         std::cout << ptr[i] << ' ';
     }
     std::cout << '\n';
+
+    free(ptr);
 
     return 0;
 }

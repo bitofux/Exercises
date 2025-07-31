@@ -32,5 +32,7 @@ int main() {
     }
     std::cout << '\n';
 
+    free(ptr);
+
     return 0;
 }
