@@ -5,15 +5,15 @@
 
 void showStack() {
     int arr[5] = {1, 2, 3, 4, 5};
-    for (auto& ref : arr) {
+    for (const auto& ref : arr) {
         std::cout << ref << ' '; 
     }
     std::cout << '\n';
 }
 
 void showHeap() {
-    int* arr = reinterpret_cast<int*>(malloc(sizeof(*arr) * 5));
-    if (arr == NULL) {
+    int* arr = static_cast<int*>(malloc(sizeof(*arr) * 5));
+    if (arr == nullptr) {
         std::cerr << "内存分配失败\n";
         return;
     }

@@ -14,8 +14,8 @@ void findMax(int arr[], size_t size, int& max) {
 int main() {
     int max = -1;
     int arr[5] = {-2, -34, -23, -3, 0};
-    constexpr int len = sizeof(arr) / sizeof(arr[0]);
-    findMax(arr, len, max);
+    constexpr int kLen = sizeof(arr) / sizeof(arr[0]);
+    findMax(arr, kLen, max);
 
     std::cout << "max: " << max << '\n';
 

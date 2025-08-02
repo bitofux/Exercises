@@ -5,7 +5,7 @@
 #include <iostream>
 
 int main() {
-    int* ptr = reinterpret_cast<int*>(malloc(sizeof(*ptr) * 5));
+    int* ptr = static_cast<int*>(malloc(sizeof(*ptr) * 5));
     if (!ptr) {
         std::cerr << "分配内存失败\n";
         return 1;
@@ -15,8 +15,8 @@ int main() {
         ptr[i] = i * 2;
     }
 
-    int* tmp = reinterpret_cast<int*>(realloc(ptr, sizeof(*tmp) * 10));
-    if (tmp == NULL) {
+    int* tmp = static_cast<int*>(realloc(ptr, sizeof(*tmp) * 10));
+    if (tmp == nullptr) {
         free(ptr);
         ptr = nullptr;
     } else {

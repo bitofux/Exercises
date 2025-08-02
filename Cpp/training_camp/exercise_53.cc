@@ -16,7 +16,7 @@ int main() {
 
     calculate(arr, len, operaArray);
 
-    for (auto& ref : arr) {
+    for (const auto& ref : arr) {
         std::cout << ref << ' ';
     }
 

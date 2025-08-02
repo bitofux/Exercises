@@ -6,10 +6,10 @@
 #include <iostream>
 
 int* findMax(int arr[], size_t size) {
-    int* max = reinterpret_cast<int*>(malloc(sizeof(*max)));
-    if (max == NULL) {
+    int* max = static_cast<int*>(malloc(sizeof(*max)));
+    if (max == nullptr) {
         std::cerr << "内存分配失败\n";
-        return NULL;
+        return nullptr;
     }
     *max = arr[0];
     for (size_t i = 1; i < size; i++) {

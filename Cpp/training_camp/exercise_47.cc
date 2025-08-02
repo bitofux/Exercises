@@ -7,11 +7,15 @@ int main() {
     std::cout << "输入数组的大小(不超过100): ";
     int size = 0;
     std::cin >> size;
+    if (size <= 0) {
+        std::cout << "input error\n";
+        return 1;
+    }
 
     std::cout << "size = " << size << std::endl;
     // 使用malloc分配size大小的整型数组
-    int* ptr = reinterpret_cast<int*>(malloc(size * sizeof(*ptr)));
-    if (ptr == NULL) {
+    int* ptr = static_cast<int*>(malloc(size * sizeof(*ptr)));
+    if (ptr == nullptr) {
         std::cerr << "分配内存失败\n";
         return 1;
     }

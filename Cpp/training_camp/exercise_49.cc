@@ -5,8 +5,8 @@
 #include <iostream>
 
 int main() {
-    int* ptr = reinterpret_cast<int*>(malloc(sizeof(*ptr) * 5));
-    if (ptr == NULL) {
+    int* ptr = static_cast<int*>(malloc(sizeof(*ptr) * 5));
+    if (ptr == nullptr) {
         std::cerr << "内存分配失败\n";
         return 1;
     }
