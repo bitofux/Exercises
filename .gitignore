@@ -18,6 +18,7 @@ zig-out/
 *.so
 *.dylib
 *.dll
+.dSYM
 
 # Fortran module files
 *.mod

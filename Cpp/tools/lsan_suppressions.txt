@@ -1,0 +1,2 @@
+# 忽略 ObjC 运行时初始化类列表相关的 direct 和 indirect 泄漏
+leak:*fetchInitializingClassList*
