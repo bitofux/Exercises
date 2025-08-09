@@ -13,7 +13,8 @@ public:
     ~Complex() { std::cout << "~Complex()\n"; }
 
 public:
-    // + 运算符重载
+    // + 运算符重载:成员函数的形式进行重载
+    // 在形式上与加法是二元运算符有些违背
     Complex operator+(const Complex& other) {
         return Complex{this->real_ + other.real_, this->dimage_ + other.dimage_};
     }
