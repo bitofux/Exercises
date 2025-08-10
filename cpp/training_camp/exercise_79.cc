@@ -5,11 +5,11 @@
 
 struct Point {
     Point(const int ix, const int iy)
-        : ix_{ix},
-          iy_{iy} {}
-    void show() const { std::cout << "(" << ix_ << "," << iy_ << ")\n"; }
-    int ix_;
-    int iy_;
+        : ix{ix},
+          iy{iy} {}
+    void show() const { std::cout << "(" << ix << "," << iy << ")\n"; }
+    int ix;
+    int iy;
 };
 
 int main() {
