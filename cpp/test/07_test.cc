@@ -4,6 +4,7 @@
  * @author  bitofux
  * @date    2025-09-05
  ****************************************************/
+#include <condition_variable>
 #include <iostream>
 #include <iterator>
 class SeqStack {
@@ -13,6 +14,30 @@ public:
         _pstack = new int[size]{};
         _top = -1;
         _size = size;
+    }
+
+    // 自定义拷贝构造函数
+    // _pstack除非对象析构,否则不可能为nullptr
+    SeqStack(const SeqStack& other) {
+        _pstack = new int[other._size]{};
+        for (int i = 0; i < other._size; ++i) {
+            _pstack[i] = other._pstack[i];
+        }
+        _size = other._size;
+        _top = other._top;
+    }
+    // 自定义赋值运算符重载函数
+    SeqStack& operator=(const SeqStack& other) {
+        if (this != &other) {
+            delete[] _pstack;
+            _pstack = new int[other._size]{};
+            for (int i = 0; i < other._size; ++i) {
+                _pstack[i] = other._pstack[i];
+            }
+            _top = other._top;
+            _size = other._size;
+        }
+        return *this;
     }
     // // 初始化顺序栈
     // void init(const int size = 10) {
