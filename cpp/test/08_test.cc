@@ -1,6 +1,5 @@
 #include <cstring>
 #include <iostream>
-#include <string>
 using std::cout;
 
 class String {
