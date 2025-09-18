@@ -1,3 +1,4 @@
+// 实现一个简单的通用vector
 #include <iostream>
 
 template <typename T>
@@ -79,19 +80,47 @@ private:
     T* end_;
 };
 
+void test_custom_type() {
+    class test {
+    public:
+        test() { std::cout << "test()\n"; }
+        test(const test& src) { std::cout << "test(const test&)\n"; }
+        test& operator=(const test& src) {
+            std::cout << "operator=(const test&)\n";
+            return *this;
+        }
+        ~test() { std::cout << "~test()\n"; }
+    };
+    // 直接莫名其妙给了我10个test类型的对象,明明我只需要一部分空间而已
+    // 还不需要实际的对象存在
+    vector<test> vec{10};
+    std::cout << "----------------\n";
+    test t1, t2, t3;
+    // 由于之前直接有了10个test类型的对象,当我push_back的时候
+    // 形式参数会触发拷贝构造,随后赋值的时候还要掉赋值运算符重载函数
+    vec.push_back(t1);
+    vec.push_back(t2);
+    vec.push_back(t3);
+    // 且我在pop_back的时候,只是简单的移动指针,并没有将这个对象真正的析构掉
+    // 这样如果这个对象拥有动态资源的话,将会造成严重的泄露
+    vec.pop_back();
+    vec.pop_back();
+    vec.pop_back();
+}
 int main() {
-    using vector = vector<int>;
-    vector vec{6};
-    for (int i = 0; i < 6; ++i) {
-        vec.push_back(i * 2);
-    }
-
-    vec.show();
-
-    vector v1{vec};
-    v1.show();
-    v1.pop_back();
-    vec = v1;
-    vec.show();
+    test_custom_type();
+    // using vector = vector<int>;
+    // vector vec{6};
+    // for (int i = 0; i < 6; ++i) {
+    //     vec.push_back(i * 2);
+    // }
+    //
+    // vec.show();
+    //
+    // vector v1{vec};
+    // v1.show();
+    // v1.pop_back();
+    // vec = v1;
+    // vec.show();
     return 0;
 }
