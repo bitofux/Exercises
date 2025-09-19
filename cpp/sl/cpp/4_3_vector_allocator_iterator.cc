@@ -1,15 +1,13 @@
 /****************************************************
- * @file    4_3_vector_allocator.cc
- * @brief   根据上次的问题,需要为自定义的vector重新自定义一个
- *          分配器,依据这个分配器,将分配分配和构造对象分开
- *          new运算符的基本操作就是分配内存和构造对象,将这
- *          这个分开
+ * @file    4_3_vector_allocator_iterator.cc
+ * @brief   为自定义的vector实现一个简单的迭代器
  * @author  bitofux
  * @date    2025-09-18
  ****************************************************/
 // 实现一个带有自定义分配器的通用vector
 #include <cstdlib>
 #include <iostream>
+#include <exception>
 template <typename T>
 class Allocator {
 public:
@@ -95,6 +93,36 @@ public:
         }
         std::cout << "\n";
     }
+    // [] 运算符重载
+    T& operator[](int index) {
+        if (index < 0 || index >= size()) {
+            throw "index out range";
+        }
+        return *(first_ + index);
+    }
+
+    // 简单的迭代器
+    class iterator {
+    public:
+        iterator(T* ptr = nullptr)
+            : ptr_{ptr} {}
+
+        // 运算符!=
+        bool operator!=(const iterator& src) { return ptr_ != src.ptr_; }
+        // 运算符++ 前自增
+        iterator& operator++() {
+            ptr_++;
+            return *this;
+        }
+        // 运算符*
+        T& operator*() { return *ptr_; }
+
+    private:
+        T* ptr_;
+    };
+
+    iterator begin() { return iterator{first_}; }
+    iterator end() { return iterator{last_}; }
 
 private:
     void expand() {
@@ -156,4 +184,21 @@ void test_custom_type() {
     vec.push_back(test{});
     std::cout << "size: " << vec.size() << "\n";
 }
-int main() { test_custom_type(); }
+void test_iterator() {
+    Allocator<int> alloc;
+    vector<int> vec{5, alloc};
+
+    for (int i = 0; i < 5; ++i) {
+        vec.push_back(i * 2);
+    }
+
+    auto it = vec.begin();
+    for (; it != vec.end(); ++it) {
+        std::cout << *it << " ";
+    }
+    std::cout << "\n";
+    for (auto& val : vec) {
+        std::cout << val << "\n";
+    }
+}
+int main() { test_iterator(); }
