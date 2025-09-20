@@ -1,5 +1,5 @@
 /****************************************************
- * @file    4_3_vector_allocator_iterator.cc
+ * @file    5_4_vector_allocator_iterator.cc
  * @brief   为自定义的vector实现一个简单的迭代器
  * @author  bitofux
  * @date    2025-09-18
@@ -7,7 +7,6 @@
 // 实现一个带有自定义分配器的通用vector
 #include <cstdlib>
 #include <iostream>
-#include <exception>
 template <typename T>
 class Allocator {
 public:
