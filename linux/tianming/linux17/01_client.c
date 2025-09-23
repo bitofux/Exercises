@@ -1,12 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <errno.h>
-#include <error.h>
-#include <arpa/inet.h>
-#include <unistd.h>
-
+#include "sys_header.h"
 int main(int argc, char** argv) {
     if (argc < 3) {
         fprintf(stderr, "usage: exec ip port\n");

@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "sys_header.h"
 int main(int argc, char** argv) {
     if (argc < 3) {
@@ -48,24 +49,45 @@ int main(int argc, char** argv) {
         error(1, errno, "accept");
     }
 
-    // 创建用户态缓冲区保存读取到的数据
-    char buf[1024] = {0};
-    // 读取数据,若socket文件对象对应的接收队列没有
-    // 数据,则默认会阻塞
-    int ret_recv = recv(net_fd, buf, sizeof(buf), 0);
-    if (ret_recv < 0) {
-        error(1, errno, "recv");
-    }
-    // 将数据发送到console
-    int ret_write = write(STDOUT_FILENO, buf, sizeof(buf));
-    if (ret_write < 0) {
-        error(1, errno, "write");
-    }
+    fd_set readfds;
 
-    // 回复客户端数据
-    int ret_send = send(net_fd, "nihao", 5, 0);
-    if (ret_send < 0) {
-        error(1, errno, "send");
+    char buf[1024] = {0};
+
+    while (1) {
+        FD_ZERO(&readfds);
+        FD_SET(STDIN_FILENO, &readfds);
+        FD_SET(net_fd, &readfds);
+        int ret_select = select(net_fd + 1, &readfds, NULL, NULL, NULL);
+        if (ret_select < 0) {
+            perror("select");
+            return -1;
+        }
+
+        if (FD_ISSET(STDIN_FILENO, &readfds)) {
+            printf("stdin\n");
+            bzero(buf, sizeof(buf));
+            int ret_read = read(STDIN_FILENO, buf, sizeof(buf));
+            if (ret_read < 0) {
+                perror("read");
+                return -1;
+            }
+            int ret_send = send(net_fd, buf, sizeof(buf), 0);
+            if (ret_send < 0) {
+                perror("send");
+                return -1;
+            }
+        }
+
+        if (FD_ISSET(net_fd, &readfds)) {
+            bzero(buf, sizeof buf);
+            int ret_recv = recv(net_fd, buf, sizeof(buf), 0);
+            if (ret_recv < 0) {
+                perror("recv");
+                return -1;
+            }
+
+            printf("clint->buf:%s\n", buf);
+        }
     }
 
     return 0;
