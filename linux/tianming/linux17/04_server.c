@@ -1,4 +1,8 @@
+// 实现地址复用: 使用setsockopt函数
+#include <asm-generic/socket.h>
 #include <stdio.h>
+#include <sys/socket.h>
+#include <unistd.h>
 #include "sys_header.h"
 int main(int argc, char** argv) {
     if (argc < 3) {
@@ -22,6 +26,14 @@ int main(int argc, char** argv) {
     // 大端表示法的ip地址
     addr_in.sin_addr.s_addr = inet_addr(argv[1]);
 
+    // 实现地址复用：不会改变TIME_WAIT状态
+    int reuse = 1;
+    int ret_setsockopt = setsockopt(sock_fd, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(reuse));
+    if (ret_setsockopt == -1) {
+        perror("setsockopt");
+        close(sock_fd);
+        return -1;
+    }
     // 绑定地址+端口
     int ret_bind = bind(sock_fd, (struct sockaddr*)&addr_in, sizeof(addr_in));
     if (ret_bind < 0) {

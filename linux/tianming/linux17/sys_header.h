@@ -16,4 +16,5 @@
 #include <unistd.h>
 #include <string.h>
 #include <sys/select.h>
+#include <time.h>  // clock_gettime
 #endif
