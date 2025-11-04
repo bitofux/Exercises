@@ -15,6 +15,8 @@
 #include <sys/epoll.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
+#include <dirent.h>
+#include <fcntl.h>
 
 // 进程池中的进程数量
 #define PROC_NUM 4

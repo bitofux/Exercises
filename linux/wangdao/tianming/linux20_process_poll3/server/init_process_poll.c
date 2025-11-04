@@ -4,10 +4,10 @@
  * @author  bitofux
  * @date    2025-11-01
  ****************************************************/
-#include <asm-generic/socket.h>
+#include <fcntl.h>
 #include <stdio.h>
-#include <string.h>
 #include <sys/socket.h>
+#include <unistd.h>
 #include "header.h"
 
 int init_process_poll(proc_t* list, int num) {
@@ -44,6 +44,8 @@ int init_process_poll(proc_t* list, int num) {
                     perror("send");
                     return -1;
                 }
+                // 暂时是数据处理结束之后,关闭客户端
+                close(net_fd);
             }
         } else if (pid == -1) {
             fprintf(stderr, "fork failed\n");
@@ -88,17 +90,45 @@ int recv_fd_from_parent(int fd, int* net_fd) {
 }
 
 int work(int fd) {
-    char buf[1024] = {0};
-    int ret_recv = recv(fd, buf, sizeof(buf), 0);
-    if (ret_recv < 0) {
-        perror("recv");
-        return -1;
-    }
-    printf("recv from client: %s\n", buf);
-    int ret_send = send(fd, "I am server", strlen("I am server"), 0);
+    const char* file_name = "1.txt";
+    size_t file_length = strlen(file_name);
+    // 发送文件名大小+发送文件名称
+    int ret_send = send(fd, &file_length, sizeof(size_t), 0);
     if (ret_send < 0) {
         perror("send");
         return -1;
+    }
+    ret_send = send(fd, file_name, file_length, 0);
+    if (ret_send < 0) {
+        perror("send");
+        return -1;
+    }
+
+    // 打开文件，读取文件内容
+    int file_fd = open(file_name, O_RDONLY);
+    if (file_fd < 0) {
+        perror("open");
+        return -1;
+    }
+    // 循环读取文件内容,一次读取1000个字节
+    // 并发送到socket文件中的发送缓冲区
+    char buf[1000] = {0};
+    while (1) {
+        int ret_read = read(file_fd, buf, sizeof(buf));
+        if (ret_read < 0) {
+            perror("read");
+            return -1;
+        } else if (ret_read == 0) {
+            break;
+        }
+        // 发送数据大小
+        int ret_send = send(fd, &ret_read, sizeof(int), 0);
+        if (ret_send < 0) {
+            perror("send");
+            return -1;
+        }
+        // 发送实际数据内容
+        ret_send = send(fd, buf, ret_read, 0);
     }
     return 0;
 }

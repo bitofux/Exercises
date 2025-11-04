@@ -4,6 +4,8 @@
  * @author  bitofux
  * @date    2025-11-01
  ****************************************************/
+#include <signal.h>
+#include <stdio.h>
 #include <unistd.h>
 #include "header.h"
 

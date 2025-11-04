@@ -29,11 +29,11 @@ int main(int argc, char** argv) {
 
     int ret_conn = connect(sock_fd, (const struct sockaddr*)&server_addr, sizeof(server_addr));
 
-    send(sock_fd, "hello", strlen("hello"), 0);
+    send(sock_fd, "I am client", strlen("I am client"), 0);
 
-    char buf[10] = {0};
+    char buf[1024] = {0};
     recv(sock_fd, buf, sizeof buf, 0);
-    printf("buf: %s\n", buf);
+    printf("recv from server: %s\n", buf);
     while (1) {
     }
 }
