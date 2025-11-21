@@ -4,15 +4,38 @@
  * @author  bitofux
  * @date    2025-11-01
  ****************************************************/
+#include <signal.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/epoll.h>
+#include <sys/types.h>
+#include <time.h>
 #include <unistd.h>
 #include "header.h"
-
+#include <sys/wait.h>
+// 创建一个匿名管道
+int pipe_fd[2];
+// SIGINT信号处理函数
+void sigint(int signum) {
+    // 往管道写端写入数据
+    ssize_t ret = write(pipe_fd[1], "exit", strlen("exit"));
+    if (ret < 0) {
+        perror("write");
+    }
+}
 int main(int argc, char** argv) {
     if (argc < 3) {
         fprintf(stderr, "usage: exec ip port\n");
         return -1;
     }
+
+    // 注册信号
+    struct sigaction sa;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_handler = sigint;
+    sa.sa_flags = SA_RESTART;
+    sigaction(SIGINT, &sa, NULL);
 
     // 1. 定义一个数组:保存每个进程的属性信息
     proc_t list[PROC_NUM];
@@ -23,7 +46,8 @@ int main(int argc, char** argv) {
         fprintf(stderr, "init_process_poll failed\n");
         return -1;
     }
-
+    // 创建匿名管道(不与子进程共享)
+    pipe(pipe_fd);
     // 3. 初始化tcp连接
     int listen_fd = 0;
     if (init_tcp_connect(&listen_fd, argv[1], atoi(argv[2])) < 0) {
@@ -50,6 +74,9 @@ int main(int argc, char** argv) {
         }
     }
 
+    // 监听管道读端
+    add_fd_to_ep(ep_fd, pipe_fd[0], EPOLLIN);
+
     // 5. 定义用户态缓冲区和用于存放就绪文件对象的数组
     char buf[1024] = {0};
     struct epoll_event events[READY_NUM];
@@ -58,8 +85,12 @@ int main(int argc, char** argv) {
         memset(events, 0, sizeof(events));
         int ready_nums = epoll_wait(ep_fd, events, READY_NUM, -1);
         if (ready_nums < 0) {
-            perror("epoll_wait");
-            return -1;
+            if (errno == EINTR) {
+                continue;
+            } else {
+                perror("epoll_wait");
+                return -1;
+            }
         }
         // 6. 遍历就绪列表
         for (int i = 0; i < ready_nums; ++i) {
@@ -72,6 +103,20 @@ int main(int argc, char** argv) {
                 // 7. 将这个fd发送给空闲的子进程
                 send_fd_to_chi_proc(list, PROC_NUM, net_fd);
                 close(net_fd);
+            } else if (fd == pipe_fd[0]) {
+                char buf[4] = {0};
+                // 读取管道数据
+                ssize_t ret = read(pipe_fd[0], buf, sizeof(buf));
+                // 通知子进程退出
+                send_fd_to_chi_proc(list, PROC_NUM, 0);
+                // 父进程阻塞等待子进程退出
+                int status = 0;
+                for (int i = 0; i < PROC_NUM; ++i) {
+                    pid_t pid = waitpid(list[i].pid, &status, 0);
+                    printf("child'pid: %d,exit code:%d\n", pid, WIFEXITED(status));
+                }
+                // 退出完之后父进程退出
+                exit(1);
             } else {
                 bzero(buf, sizeof(buf));
                 int ret = recv(fd, buf, sizeof(buf), 0);

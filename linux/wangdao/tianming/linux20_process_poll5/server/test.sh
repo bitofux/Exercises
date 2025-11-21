@@ -4,7 +4,7 @@
 OUTPUT_FILE="1.txt"
 
 # 目标大小（30MB）
-TARGET_SIZE=$((30 * 1024 * 1024))  # 30 × 1024 × 1024 = 31457280 bytes
+TARGET_SIZE=$((2 * 1024 * 1024 * 1024))  # 30 × 1024 × 1024 = 31457280 bytes
 
 echo "⏳ Generating a 30MB text file..."
 

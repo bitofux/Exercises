@@ -4,13 +4,17 @@
  * @author  bitofux
  * @date    2025-11-01
  ****************************************************/
+#include <sys/sendfile.h>
 #include <fcntl.h>
-#include <signal.h>
 #include <stdio.h>
+#include <string.h>
 #include <sys/socket.h>
+#include <sys/types.h>
 #include <unistd.h>
 #include "header.h"
-
+#include <sys/stat.h>
+#include <sys/mman.h>
+#define CHUNK 64u * 1024
 int init_process_poll(proc_t* list, int num) {
     // 1. 要为每个进程创建一对socketpair,否则多个进程共用一对
     // socketpair会出现race condition
@@ -94,15 +98,13 @@ int work(int fd) {
     const char* file_name = "1.txt";
     size_t file_length = strlen(file_name);
     // 发送文件名大小+发送文件名称
-    int ret_send = send(fd, &file_length, sizeof(size_t), 0);
+    int ret_send = send(fd, &file_length, sizeof(size_t), MSG_NOSIGNAL);
     if (ret_send < 0) {
         perror("send");
-        return -1;
     }
-    ret_send = send(fd, file_name, file_length, 0);
+    ret_send = send(fd, file_name, file_length, MSG_NOSIGNAL);
     if (ret_send < 0) {
         perror("send");
-        return -1;
     }
 
     // 打开文件，读取文件内容
@@ -111,31 +113,34 @@ int work(int fd) {
         perror("open");
         return -1;
     }
-    // 循环读取文件内容,一次读取1000个字节
-    // 并发送到socket文件中的发送缓冲区
-    char buf[1000] = {0};
-    while (1) {
-        int ret_read = read(file_fd, buf, sizeof(buf));
-        if (ret_read < 0) {
-            perror("read");
-            break;
-        } else if (ret_read == 0) {
-            break;
-        }
-        // 发送数据大小,忽略信号
-        int one_send = send(fd, &ret_read, sizeof(int), MSG_NOSIGNAL);
-        if (one_send < 0) {
-            printf("one_send->errno: %d\n", errno);
-            perror("send");
-            break;
-        }
-        // 发送实际数据内容
-        int two_send = send(fd, buf, ret_read, MSG_NOSIGNAL);
-        if (two_send < 0) {
-            printf("two_send->errno: %d\n", errno);
-            perror("send");
+    // 发送文件大小
+    struct stat st;
+    memset(&st, 0, sizeof(st));
+    int ret_fstat = fstat(file_fd, &st);
+    if (ret_fstat < 0) {
+        perror("fstat");
+    }
+    off_t file_size = st.st_size;
+    ret_send = send(fd, &file_size, sizeof(off_t), MSG_NOSIGNAL);
+    if (ret_send < 0) {
+        perror("send");
+    }
+    // 偏移量,使用sendfile时会自动更新偏移量
+    off_t offset = 0;
+    size_t to_send;
+    while (offset < file_size) {
+        to_send = CHUNK;
+        // 如果要发送的数据小于chunk,那么需要文件大小
+        // 减去偏移量获取需要发送的数据，否则会造成
+        // 文件越界发送
+        if (file_size - offset < CHUNK) to_send = file_size - offset;
+        ssize_t ret_sendfile = sendfile(fd, file_fd, &offset, to_send);
+        if (ret_sendfile <= 0) {
+            if (errno == EINTR) continue;
+            perror("sendfile");
             break;
         }
     }
+
     return 0;
 }

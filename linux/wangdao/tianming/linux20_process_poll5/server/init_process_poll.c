@@ -7,9 +7,12 @@
 #include <fcntl.h>
 #include <signal.h>
 #include <stdio.h>
+#include <string.h>
 #include <sys/socket.h>
 #include <unistd.h>
 #include "header.h"
+#include <sys/stat.h>
+#include <sys/mman.h>
 
 int init_process_poll(proc_t* list, int num) {
     // 1. 要为每个进程创建一对socketpair,否则多个进程共用一对
@@ -24,15 +27,21 @@ int init_process_poll(proc_t* list, int num) {
         pid_t pid = fork();
         if (pid == 0) {
             // 子进程逻辑
+            // 0. 创建属于自己的进程组,避免收到2号信号
+            setpgid(0, 0);
             // 1. 关闭对一个文件对象的引用
             close(sp[1]);
             while (1) {
                 // 2. 接收父进程传来的数据
                 // 2.1 定义一个变量保存从父进程传来的数据
                 int net_fd = -1;
-                if (recv_fd_from_parent(sp[0], &net_fd) < 0) {
+                int ret = recv_fd_from_parent(sp[0], &net_fd);
+                if (ret == -1) {
                     fprintf(stderr, "recv_fd_from_parent failed\n");
                     return -1;
+                } else if (ret == -2) {
+                    printf("child process exit\n");
+                    exit(1);
                 }
                 // 3. 数据处理
                 if (work(net_fd) < 0) {
@@ -40,7 +49,7 @@ int init_process_poll(proc_t* list, int num) {
                     return -1;
                 }
                 // 4. 数据处理完成之后，通知父进程
-                int ret = send(sp[0], "done", strlen("done"), 0);
+                ret = send(sp[0], "done", strlen("done"), 0);
                 if (ret < 0) {
                     perror("send");
                     return -1;
@@ -67,7 +76,7 @@ int recv_fd_from_parent(int fd, int* net_fd) {
     struct msghdr msg;
     memset(&msg, 0, sizeof(msg));
 
-    char ch = '0';
+    char ch;
     struct iovec iov = {.iov_base = &ch, .iov_len = sizeof(ch)};
     msg.msg_iov = &iov;
     msg.msg_iovlen = 1;
@@ -78,12 +87,18 @@ int recv_fd_from_parent(int fd, int* net_fd) {
     msg.msg_control = control;
     msg.msg_controllen = rights;
     size_t ret = recvmsg(fd, &msg, 0);
-    printf("after recvmsg\n");
-    if (ret < 0) {
+    if (ret <= 0) {
         perror("recvmsg");
         return -1;
     }
+    if (ch == 'e') {
+        return -2;
+    }
     struct cmsghdr* cmsg = CMSG_FIRSTHDR(&msg);
+    if (cmsg == NULL) {
+        fprintf(stderr, "CMSG_FIRSTHDR FAILED");
+        return -1;
+    }
     int* data = (int*)CMSG_DATA(cmsg);
     *net_fd = *data;
     printf("*data: %d\n", *data);
@@ -94,15 +109,13 @@ int work(int fd) {
     const char* file_name = "1.txt";
     size_t file_length = strlen(file_name);
     // 发送文件名大小+发送文件名称
-    int ret_send = send(fd, &file_length, sizeof(size_t), 0);
+    int ret_send = send(fd, &file_length, sizeof(size_t), MSG_NOSIGNAL);
     if (ret_send < 0) {
         perror("send");
-        return -1;
     }
-    ret_send = send(fd, file_name, file_length, 0);
+    ret_send = send(fd, file_name, file_length, MSG_NOSIGNAL);
     if (ret_send < 0) {
         perror("send");
-        return -1;
     }
 
     // 打开文件，读取文件内容
@@ -111,31 +124,33 @@ int work(int fd) {
         perror("open");
         return -1;
     }
-    // 循环读取文件内容,一次读取1000个字节
-    // 并发送到socket文件中的发送缓冲区
-    char buf[1000] = {0};
-    while (1) {
-        int ret_read = read(file_fd, buf, sizeof(buf));
-        if (ret_read < 0) {
-            perror("read");
-            break;
-        } else if (ret_read == 0) {
-            break;
-        }
-        // 发送数据大小,忽略信号
-        int one_send = send(fd, &ret_read, sizeof(int), MSG_NOSIGNAL);
-        if (one_send < 0) {
-            printf("one_send->errno: %d\n", errno);
-            perror("send");
-            break;
-        }
-        // 发送实际数据内容
-        int two_send = send(fd, buf, ret_read, MSG_NOSIGNAL);
-        if (two_send < 0) {
-            printf("two_send->errno: %d\n", errno);
-            perror("send");
-            break;
-        }
+    // 发送文件大小
+    struct stat st;
+    memset(&st, 0, sizeof(st));
+    int ret_fstat = fstat(file_fd, &st);
+    if (ret_fstat < 0) {
+        perror("fstat");
     }
+    off_t file_size = st.st_size;
+    ret_send = send(fd, &file_size, sizeof(off_t), MSG_NOSIGNAL);
+    if (ret_send < 0) {
+        perror("send");
+    }
+    // 使用mmap映射需要发送的文件
+    char* ptr = mmap(NULL, file_size, PROT_READ, MAP_SHARED, file_fd, 0);
+    if (ptr == MAP_FAILED) {
+        perror("mmap");
+    }
+    unsigned int chunk = 64u * 1024;
+    off_t send_total = 0;
+    while (send_total < file_size) {
+        size_t ret_send = send(fd, ptr + send_total, chunk, MSG_NOSIGNAL);
+        if (ret_send < 0) {
+            perror("ret_send");
+            break;
+        }
+        send_total += chunk;
+    }
+
     return 0;
 }

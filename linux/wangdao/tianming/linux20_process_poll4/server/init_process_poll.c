@@ -7,9 +7,11 @@
 #include <fcntl.h>
 #include <signal.h>
 #include <stdio.h>
+#include <string.h>
 #include <sys/socket.h>
 #include <unistd.h>
 #include "header.h"
+#include <sys/stat.h>
 
 int init_process_poll(proc_t* list, int num) {
     // 1. 要为每个进程创建一对socketpair,否则多个进程共用一对
@@ -94,15 +96,13 @@ int work(int fd) {
     const char* file_name = "1.txt";
     size_t file_length = strlen(file_name);
     // 发送文件名大小+发送文件名称
-    int ret_send = send(fd, &file_length, sizeof(size_t), 0);
+    int ret_send = send(fd, &file_length, sizeof(size_t), MSG_NOSIGNAL);
     if (ret_send < 0) {
         perror("send");
-        return -1;
     }
-    ret_send = send(fd, file_name, file_length, 0);
+    ret_send = send(fd, file_name, file_length, MSG_NOSIGNAL);
     if (ret_send < 0) {
         perror("send");
-        return -1;
     }
 
     // 打开文件，读取文件内容
@@ -110,6 +110,18 @@ int work(int fd) {
     if (file_fd < 0) {
         perror("open");
         return -1;
+    }
+    // 发送文件大小
+    struct stat st;
+    memset(&st, 0, sizeof(st));
+    int ret_fstat = fstat(file_fd, &st);
+    if (ret_fstat < 0) {
+        perror("fstat");
+    }
+    off_t file_size = st.st_size;
+    ret_send = send(fd, &file_size, sizeof(off_t), MSG_NOSIGNAL);
+    if (ret_send < 0) {
+        perror("send");
     }
     // 循环读取文件内容,一次读取1000个字节
     // 并发送到socket文件中的发送缓冲区
