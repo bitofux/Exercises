@@ -13,9 +13,8 @@
 int thread_fun(void* args) {
     int times = 5;
     while (times--) {
-        struct timespec ts = {.tv_sec = 1, .tv_nsec = 0};
         printf("%s\n", (char*)args);
-        thrd_sleep(&ts, NULL);
+        thrd_sleep(&(struct timespec){.tv_sec = 1,.tv_nsec = 0}, NULL);
     }
     thrd_exit(times);
 }
