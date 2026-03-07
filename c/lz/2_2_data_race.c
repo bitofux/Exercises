@@ -3,14 +3,16 @@
  * FILE    : 2_2_data_race.c
  * AUTHOR  : bitofux
  * DATE    : 2026-03-06
- * BRIEF   : 数据竞争
+ * BRIEF   : 数据竞争与原子变量
  */
 #include <stdio.h>
 #include <time.h>
 #include <threads.h>
 
-/*本例中，shard_data的数值随着每次程序的执行，结果都是不一样的，这就是数据竞争锁影响的结果*/
-long long int shard_data = 0;
+/*本例中，shard_data的数值随着每次程序的执行，结果都是不一样的，这就是数据竞争锁影响的结果
+ * 若想解决data
+ * race，可将shard_data变量的类型声明为原子类型，使得针对此变量的操作都是原子操作(在当前对此变量的操作未完成之前，不允许其他操作介入)*/
+_Atomic long long int shard_data = 0;
 
 int thread_proc1(void* args) {
     int* arg = (int*)args;
