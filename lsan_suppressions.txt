@@ -1,2 +1,4 @@
 # 忽略 ObjC 运行时初始化类列表相关的 direct 和 indirect 泄漏
 leak:*fetchInitializingClassList*
+# 忽略macos系统库在执行某些操作触发的运行库分配
+leak:*__Balloc_D2A*
