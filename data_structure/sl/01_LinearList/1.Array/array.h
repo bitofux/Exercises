@@ -33,10 +33,12 @@ public:
     // 返回当前顺序表的个数
     int size() const;
 
+    // 获取动态数组的首元素指针
+    int* c_str() const;
+
 private:
     void expand(size_t new_capacity);
 
-private:
     size_t capacity_;  // 顺序表的容量
     size_t size_;      // 当前顺序表的元素个数
     int* ptr_;         // 指向堆内存的指针

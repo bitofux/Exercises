@@ -16,7 +16,7 @@ Array::Array(size_t capacity)
     : capacity_{capacity},
       size_(0),
       ptr_(new int[size_]{}) {
-    std::cout << "Array(size_t,size_t)\n";
+    std::cout << "Array(size_t)\n";
 }
 
 // 析构函数
@@ -121,7 +121,7 @@ void Array::erase(int val) {
 
 // 输出顺序表的元素以及元素个数
 void Array::show() const {
-    std::cout << "element count: "<< size_ << "\ncapacity: " << capacity_ << std::endl;
+    std::cout << "element count: " << size_ << "\ncapacity: " << capacity_ << std::endl;
     for (int i = 0; i < size_; ++i) {
         std::cout << ptr_[i] << " ";
     }
@@ -129,6 +129,7 @@ void Array::show() const {
 }
 
 // 返回顺序表的个数
-int Array::size() const {
-  return size_;
-}
+int Array::size() const { return size_; }
+
+// 获取动态数组首元素的地址
+int* Array::c_str() const { return this->ptr_; }

@@ -3,6 +3,7 @@
 # about zig
 .zig-cache/
 zig-out/
+a.out.dSYM/
 
 # Compiled Object files
 *.slo
