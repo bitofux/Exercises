@@ -37,6 +37,7 @@ private:
     static Singleton* singleton_;
 };
 Singleton* Singleton::singleton_ = nullptr;
+pthread_once_t Singleton::once_flag;
 
 int main() {
     Singleton* s = Singleton::getInstance();
