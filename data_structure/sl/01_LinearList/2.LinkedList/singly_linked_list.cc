@@ -6,6 +6,9 @@
  * BRIEF   : sll 单向链表
  */
 #include <iostream>
+#include <ctime>
+#include <cstdlib>
+#include <ostream>
 
 class SinglyLinkedList {
     // 结点类型
@@ -70,8 +73,66 @@ public:
         // 3. 执行第二步操作
         head_->next_ = new_node;
     }
+    friend std::ostream& operator<<(std::ostream& os, const SinglyLinkedList& sll);
 
 private:
     // 单向链表的数据成员
     Node* head_;  // 指向单向链表的头结点的指针
 };
+std::ostream& operator<<(std::ostream& os, const SinglyLinkedList& sll) {
+    SinglyLinkedList::Node* p = sll.head_->next_;
+    while (p != nullptr) {
+        os << p->data_ << " ";
+        p = p->next_;
+    }
+
+    return os;
+}
+
+
+// 1. 测试尾插法
+void test_insert_tail() {
+    // 创建一个链表
+    SinglyLinkedList sll{};
+
+    srand(time(nullptr));
+
+    // 头插法插入10个随机数据
+    for (int i = 0; i < 10; ++i) {
+        int val = rand() % 100 + 1;
+        sll.insertTail(val);
+        std::cout << val << " ";
+    }
+    std::cout << "\n";
+
+    // 输出链表的数据
+    std::cout << sll << std::endl;
+}
+
+// 2. 测试头插法
+void test_insert_head() {
+    // 创建一个链表
+    SinglyLinkedList sll{};
+
+    srand(time(nullptr));
+
+    // 头插法插入10个随机数据
+    for (int i = 0; i < 10; ++i) {
+        int val = rand() % 100 + 1;
+        sll.insertHead(val);
+        std::cout << val << " ";
+    }
+    std::cout << "\n";
+
+    // 输出链表的数据
+    std::cout << sll << std::endl;
+}
+int main() {
+    // 1. 测试尾插法
+    // test_insert_tail();
+
+    // 2. 测试头插法
+    test_insert_head();
+
+    return 0;
+}
