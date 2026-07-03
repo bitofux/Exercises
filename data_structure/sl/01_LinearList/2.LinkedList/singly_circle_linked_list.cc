@@ -11,7 +11,7 @@
 
 class SinglyCircleLinkedList {
     struct Node {
-        Node(int data)
+        Node(int data = 0)
             : data_{data},
               next_{nullptr} {}
         int data_;
@@ -20,49 +20,54 @@ class SinglyCircleLinkedList {
 
 public:
     SinglyCircleLinkedList()
-        : head_{new Node{0}} {
+        : head_{new Node} {
         // 初始阶段，尾指针和头指针都指向头结点
         tail_ = head_;
+        // 将头结点也看作是尾结点，其next指向head
+        tail_->next_ = head_;
     }
-    ~SinglyCircleLinkedList() {}
+    ~SinglyCircleLinkedList() {
+        // 定义指针p指向第一个有效结点用于删除
+        Node* p = head_->next_;
+
+        while (p != head_) {
+            // head_指向p指向的下一个结点
+            head_->next_ = p->next_;
+            // 释放p
+            delete p;
+            // 重置p的值，用于删除下一个有效结点
+            p = head_->next_;
+        }
+
+        // 删除头结点
+        delete head_;
+    }
 
     // 头插法
     void insertHead(int val) {
-        // 1. 构建新的结点
+        // 构建一个新的结点
         Node* new_node = new Node{val};
 
-        // 2. 当前链表若为空
-        if (head_->next_ == nullptr) {
-            head_->next_ = new_node;
+        // 插入新结点
+        new_node->next_ = head_->next_;
+        head_->next_ = new_node;
 
-            // 修改尾指针的指向，指向尾结点
-            tail_ = new_node;
-            // 尾结点的指针域要指向头结点
-            tail_->next_ = head_;
-
-        } else {  // 若不为空
-
-            new_node->next_ = head_->next_;
-            head_->next_ = new_node;
-        }
+        // 判断new_node中next指针域的值，若是head，则表明插入这个结点
+        // 之前，此链表是一个空链表，需要更新tail的值
+        if (new_node->next_ == head_) tail_ = new_node;
     }
 
     // 尾插法
     void insertTail(int val) {
-        // 1. 构建新的结点
+        // 构建一个新的结点
         Node* new_node = new Node{val};
 
-        // 2. 判断当前链表是否为空
-        if (head_->next_ == nullptr) {
-            head_->next_ = new_node;
-            tail_ = new_node;
+        // 插入新结点
+        tail_->next_ = new_node;
 
-            // 修改尾指针的指向为头结点
-            tail_->next_ = head_;
-        } else {  // 若不为空
-            tail_->next_ = new_node;
-            new_node->next_ = head_;
-        }
+        // 更新tail_的指向
+        tail_ = new_node;
+        tail_->next_ = head_;
     }
 
     // 删除值为val的结点
@@ -78,6 +83,11 @@ public:
             if (p->data_ == val) {
                 q->next_ = p->next_;
                 delete p;
+
+                // 若删除的p指向的是尾结点，需要更新tail的值
+                if (q->next_ == head_) {
+                    tail_ = q;
+                }
                 break;
             } else {
                 q = p;
@@ -99,6 +109,13 @@ public:
                 q->next_ = p->next_;
                 delete p;
 
+                // 若删除的p指向的是尾结点，需要更新tail的值
+                if (q->next_ == head_) {
+                    tail_ = q;
+                    break;
+                }
+
+                // 若删除的不是尾结点，则需要更新p的值
                 p = q->next_;
             } else {
                 q = p;
@@ -121,9 +138,13 @@ std::ostream& operator<<(std::ostream& os, const SinglyCircleLinkedList& scll) {
         os << p->data_ << " ";
         p = p->next_;
     }
+    os << "\n";
+    os << "first->" << scll.head_->next_->data_ << "\n";
+    os << "tail ->" << scll.tail_->data_ << "\n";
     return os;
 }
 
+// 测试头插法
 void test_insert_head() {
     SinglyCircleLinkedList scll;
 
@@ -133,16 +154,34 @@ void test_insert_head() {
     // 使用19937算法
     std::mt19937 gen(rd());
 
-    std::uniform_int_distribution<> distrib(1, 10);
+    std::uniform_int_distribution<> distrib(1, 100);
 
-    for (int i = 0; i < 20; ++i) {
+    for (int i = 0; i < 5; ++i) {
         int val = distrib(gen);
         scll.insertHead(val);
-        std::cout << val << " ";
+        std::cout << scll << std::endl;
     }
-    std::cout << std ::endl;
+}
 
-    std::cout << scll << std::endl;
+// 测试尾插法
+void test_insert_tail() {
+    SinglyCircleLinkedList scll;
+
+    // 初始化随机设备
+    std::random_device rd;
+
+    // 随机算法
+    std::mt19937 gen{rd()};
+
+    // 定义随机数的生成区间
+    std::uniform_int_distribution<> distrib(1, 100);
+
+    // 尾插10个数据
+    for (int i = 0; i < 5; ++i) {
+        int val = distrib(gen);
+        scll.insertTail(val);
+        std::cout << scll << "\n";
+    }
 }
 void test_remove() {
     SinglyCircleLinkedList scll;
@@ -158,18 +197,59 @@ void test_remove() {
     for (int i = 0; i < 20; ++i) {
         int val = distrib(gen);
         scll.insertHead(val);
-        std::cout << val << " ";
     }
-    std::cout << std ::endl;
-
     std::cout << scll << std::endl;
 
-    scll.remove_all(6);
+    // 删除值为6的单个结点
+    scll.remove(6);
+    std::cout << scll << std::endl;
+
+    // 插入一个尾结点，并删除，查看tail是否更新
+    scll.insertTail(20);
+    std::cout << scll << std::endl;
+    scll.remove(20);
     std::cout << scll << std::endl;
 }
 
+void test_remove_all() {
+    SinglyCircleLinkedList scll;
+
+    // 初始化随机设备
+    std::random_device rd;
+
+    // 使用19937算法
+    std::mt19937 gen(rd());
+
+    std::uniform_int_distribution<> distrib(1, 10);
+
+    for (int i = 0; i < 20; ++i) {
+        int val = distrib(gen);
+        scll.insertHead(val);
+    }
+    std::cout << scll << std::endl;
+
+    // 删除值为6的单个结点
+    scll.remove_all(6);
+    std::cout << scll << std::endl;
+
+    // 插入一个尾结点，并删除，查看tail是否更新
+    scll.insertTail(30);
+    std::cout << scll << std::endl;
+    scll.remove_all(30);
+    std::cout << scll << std::endl;
+}
 int main() {
-    test_remove();
+    // 测试头插法
+    // test_insert_head();
+
+    // 测试尾插法
+    // test_insert_tail();
+
+    // 测试按值删除
+    // test_remove();
+
+    // 测试按值删除所有结点
+    test_remove_all();
 
     return 0;
 }
