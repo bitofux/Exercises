@@ -53,6 +53,87 @@ public:
         }
     }
 
+    // 尾插法
+    void insertTail(int val) {
+        // 1. 定义寻找尾结点的指针p
+        Node* p = head_;
+        while (p->next_ != nullptr) {
+            p = p->next_;
+        }
+
+        // 2. 构建新的结点new_node
+        Node* new_node = new Node{val};
+
+        // 3. 执行插入
+        p->next_ = new_node;
+        new_node->pre_ = p;
+    }
+
+    // 按值删除单个结点
+    void remove(int val) {
+        // 若链表无有效结点
+        if (head_->next_ == nullptr) {
+            return;
+        }
+        // 定义一个新的指针p
+        Node* p = head_->next_;
+
+        // 循环找到要删除的结点
+        while (p != nullptr) {
+            // 判断当前结点的数据域是否与val相等，若相等则执行删除
+            if (p->data_ == val) {
+                p->pre_->next_ = p->next_;
+                // 若删除的结点不是尾结点
+                if (p->next_ != nullptr) {
+                    p->next_->pre_ = p->pre_;
+                }
+
+                delete p;
+                break;
+            } else {
+                p = p->next_;
+            }
+        }
+    }
+    // 按值删除多个结点
+    void remove_all(int val) {
+        // 若链表无有效结点
+        if (head_->next_ == nullptr) {
+            return;
+        }
+        // 定义一个新的指针p
+        Node* p = head_->next_;
+
+        // 循环找到要删除的结点
+        while (p != nullptr) {
+            // 判断当前结点的数据域是否与val相等，若相等则执行删除
+            if (p->data_ == val) {
+                p->pre_->next_ = p->next_;
+                // // 若删除的结点不是尾结点
+                // if (p->next_ != nullptr) {
+                //     p->next_->pre_ = p->pre_;
+                //     Node* q = p->next_;
+                //     delete p;
+                //     p = q;
+                // } else {// 若是尾结点
+                //     delete p;
+                //     break;
+                // }
+
+                // 若p指向的不是尾结点，更新下一个结点的pre
+                if (p->next_ != nullptr) {
+                    p->next_->pre_ = p->pre_;
+                }
+
+                Node* q = p->next_;
+                delete p;
+                p = q;
+            } else {
+                p = p->next_;
+            }
+        }
+    }
+
 private:
     friend std::ostream& operator<<(std::ostream& os, const DoublyLinkedList& dll);
     Node* head_;  // 指向头结点的指针
@@ -99,8 +180,59 @@ void test_insert_head() {
     std::cout << dll << "\n";
 }
 
+// 测试尾插法
+void test_insert_tail() {
+    DoublyLinkedList dll;
+
+    std::random_device rd;
+
+    std::mt19937 gen{rd()};
+
+    std::uniform_int_distribution<> distrib(1, 100);
+
+    for (int i = 0; i < 5; ++i) {
+        dll.insertTail(distrib(gen));
+    }
+
+    std::cout << dll << "\n";
+}
+
+// 测试按值删除单个结点
+void test_remove() {
+    DoublyLinkedList dll;
+
+    dll.insertTail(10);
+    dll.insertTail(20);
+    dll.insertTail(50);
+
+    dll.remove(50);
+    std::cout << dll << std::endl;
+}
+
+// 测试按值删除多个结点
+void test_remove_all() {
+    DoublyLinkedList dll;
+
+    dll.insertTail(10);
+    dll.insertTail(20);
+    dll.insertTail(50);
+    dll.insertTail(20);
+
+    dll.insertTail(20);
+
+    dll.remove_all(20);
+
+    std::cout << dll << std::endl;
+}
+
 int main() {
-    test_insert_head();
+    // test_insert_head();
+
+    // test_insert_tail();
+
+    // test_remove();
+
+    test_remove_all();
 
     return 0;
 }

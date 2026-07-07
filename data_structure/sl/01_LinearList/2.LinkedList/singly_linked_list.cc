@@ -93,6 +93,10 @@ public:
 
     // 按值删除单个结点
     void remove(int val) {
+        // 判断当前链表是否有有效结点
+        if (head_->next_ == nullptr) {
+            return;
+        }
         // q初始指向头结点
         Node* q = head_;
         // p初始指向第一个有效结点
@@ -119,6 +123,10 @@ public:
 
     // 按值删除多个结点
     void remove_all(int val) {
+        // 判断当前链表是否有有效结点
+        if (head_->next_ == nullptr) {
+            return;
+        }
         Node* q = head_;
         Node* p = head_->next_;
 

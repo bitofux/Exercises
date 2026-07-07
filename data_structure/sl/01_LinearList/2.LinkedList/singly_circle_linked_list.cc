@@ -72,7 +72,7 @@ public:
 
     // 删除值为val的结点
     void remove(int val) {
-        if (head_->next_ == nullptr) {
+        if (head_->next_ == head_) {
             return;
         }
 
@@ -98,7 +98,7 @@ public:
 
     // 删除值为val的全部结点
     void remove_all(int val) {
-        if (head_->next_ == nullptr) {
+        if (head_->next_ == head_) {
             return;
         }
         Node* p = head_->next_;
