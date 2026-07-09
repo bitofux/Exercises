@@ -15,7 +15,7 @@ public:
 
 class Man : public Human {
 public:
-    void show(int) { std::cout << "Man::show()" << std::endl;}
+     void show()override { std::cout << "Man::show()" << std::endl;}
 };
 
 // 测试派生类中重写的虚函数是否成功 返回值 函数参数都相同
