@@ -5,13 +5,13 @@ CXXFLAGS := -Wall -std=c++11 -pedantic -fsanitize=address,undefined -fno-omit-fr
 
 SOURCES := $(wildcard *.cc)
 
-TARGET := $(patsubst %.cc,%,$(SOURCES))
+TARGET := $(patsubst %.cc,%.out,$(SOURCES))
 
 .PHONY: all
 
 all: $(TARGET)
 
-%:%.cc
+%.out:%.cc
 	$(CXX) $(CXXFLAGS) $< -o $@
 
 
