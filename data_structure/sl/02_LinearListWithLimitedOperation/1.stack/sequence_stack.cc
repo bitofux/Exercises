@@ -8,6 +8,7 @@
 #include <cstddef>
 #include <cstring>
 #include <iostream>
+#include <ostream>
 
 class SequenceStack {
 public:
@@ -60,7 +61,7 @@ public:
     }
 
     // 获取栈顶元素
-    int top() {
+    int top() const {
         // 若栈为空
         if (empty()) {
             throw "stack is empty!";
@@ -80,6 +81,7 @@ public:
 
     // 栈内有效元素的个数
     int size() const { return top_; }
+    friend std::ostream& operator<<(std::ostream& os, const SequenceStack& ss);
 
 private:
     // 扩容接口
@@ -102,7 +104,14 @@ private:
     int top_;     // 指向栈顶
 };
 
-int main() {
+std::ostream& operator<<(std::ostream& os, const SequenceStack& ss) {
+    for (int i = ss.size()-1; i >= 0; --i) {
+        std::cout << ss.ptr_[i] << " ";
+    }
+    std::cout << "\n";
+    return os;
+}
+void test() {
     // 定义一个数组
     int arr[] = {21, 23, 92, 33, 45, 65, 101, 82, 91, 222};
 
@@ -112,13 +121,26 @@ int main() {
         ss.push(var);
     }
 
-    // 获取栈顶元素一次，出栈一次
-    // for (int i = 0; i < 10; ++i) {
-    //     std::cout << "top: " << ss.top() << std::endl;
-    //     ss.pop();
-    //     std::cout << "cap: " << ss.cap() << " " << "size: " << ss.size() << std::endl;
-    // }
+    std::cout << ss;
+    std::cout << "before expand cap: " << ss.cap() << " " << "size: " << ss.size() << std::endl;
+
+    std::cout << "\n";
 
     ss.push(1000);
-    std::cout << "cap: " << ss.cap() << " " << "size: " << ss.size() << std::endl;
+    std::cout << ss;
+    std::cout << "after expand cap: " << ss.cap() << " " << "size: " << ss.size() << std::endl;
+
+    std::cout << "\n";
+    // 获取栈顶元素一次，出栈一次
+    for (int i = 0; i < 3; ++i) {
+        std::cout << "top: " << ss.top() << std::endl;
+        ss.pop();
+        std::cout << "cap: " << ss.cap() << " " << "size: " << ss.size() << std::endl;
+    }
+}
+
+int main() {
+    test();
+
+    return 0;
 }
