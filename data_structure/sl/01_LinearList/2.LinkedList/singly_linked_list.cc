@@ -162,6 +162,46 @@ public:
 
         return false;
     }
+
+    // 指定位置插入特定值
+    void insert(int pos, int val) {
+        // 链表为空，抛出异常
+        if (head_->next_ == nullptr) {
+            throw "linked list is empty!";
+        } else if (pos <= 0 || pos > (size() + 1)) {
+            throw "pos is invalid!";
+        }
+
+        int count = 1;
+        Node* q = head_;
+        Node* p = head_->next_;
+
+        Node* new_node = new Node{val};
+        while (p) {
+            if (pos == count) {
+                q->next_ = new_node;
+                new_node->next_ = p;
+                return;
+            }
+            q = p;
+            p = p->next_;
+            ++count;
+        }
+
+        q->next_ = new_node;
+    }
+
+    // 有效元素的个数
+    size_t size() const {
+        Node* p = head_->next_;
+        int size_ = 0;
+        while (p) {
+            ++size_;
+            p = p->next_;
+        }
+
+        return size_;
+    }
     friend std::ostream& operator<<(std::ostream& os, const SinglyLinkedList& sll);
 
 private:
@@ -270,6 +310,20 @@ void test_find() {
 
     std::cout << sll.find(20) << std::endl;
 }
+
+// 测试insert
+void test_insert() {
+    SinglyLinkedList sll;
+    sll.insertHead(20);
+
+    std::cout << sll << std::endl;
+
+    sll.insert(2, 30);
+    std::cout << sll << std::endl;
+
+    sll.insert(1, 50);
+    std::cout << sll << std::endl;
+}
 int main() {
     // 1. 测试尾插法
     // test_insert_tail();
@@ -284,7 +338,9 @@ int main() {
     // test_remove_all();
 
     // 5. 测试搜索
-    test_find();
+    // test_find();
+
+    test_insert();
 
     return 0;
 }

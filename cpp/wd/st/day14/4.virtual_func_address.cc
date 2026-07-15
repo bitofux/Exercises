@@ -6,3 +6,7 @@
  * BRIEF   : 探讨类内虚函数的地址 
  */
 
+int main (int argc, char *argv[]) {
+    
+    return 0;
+}
