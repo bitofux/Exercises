@@ -6,6 +6,7 @@
  * BRIEF   : 基于双向循环链表实现的链式队列
  */
 #include <iostream>
+#include <ostream>
 
 class DoublyCircleLinkedQueue {
     struct Node {
@@ -18,6 +19,7 @@ class DoublyCircleLinkedQueue {
         Node* next_;
     };
 
+public:
     DoublyCircleLinkedQueue()
         : head_{new Node{}},
           size_{0} {
@@ -37,10 +39,14 @@ class DoublyCircleLinkedQueue {
     }
 
     // 判断当前链式队列是否为空
-    bool empty() const { return head_->pre_ = head_; }
+    bool empty() const { return head_->pre_ == head_; }
 
     // 出队(头删)
     void dequeue() {
+        // 判断当前链式队列是否为空
+        if (empty()) {
+            throw "DoublyCircleLinkedQueue is empty!";
+        }
         // 定义指针p指向第一个有效结点(队头结点)
         Node* p = head_->next_;
 
@@ -69,9 +75,11 @@ class DoublyCircleLinkedQueue {
         // 它的pre指向旧的尾结点
         new_node->pre_ = head_->pre_;
 
-        // 更新头结点pre的值，它需要指向新的尾结点
-        head_->pre_ = new_node;
+        // 更新尾结点的next
+        head_->pre_->next_ = new_node;
 
+        // 更新头结点的pre
+        head_->pre_ = new_node;
         // 元素个数自身加1
         ++size_;
     }
@@ -97,8 +105,48 @@ class DoublyCircleLinkedQueue {
 
     // 获取元素个数
     int size() const { return size_; }
+    friend std::ostream& operator<<(std::ostream& os, const DoublyCircleLinkedQueue& dclq);
 
 private:
     Node* head_;
     size_t size_;
 };
+std::ostream& operator<<(std::ostream& os, const DoublyCircleLinkedQueue& dclq) {
+    if (dclq.empty()) {
+        return os;
+    }
+    DoublyCircleLinkedQueue::Node* p = dclq.head_->next_;
+
+    while (p != dclq.head_) {
+        os << p->data_ << " -> ";
+        p = p->next_;
+    }
+    os << "nullptr";
+    return os;
+}
+
+int main() {
+    DoublyCircleLinkedQueue dclq;
+    dclq.enqueue(20);
+    dclq.enqueue(30);
+    dclq.enqueue(40);
+    dclq.enqueue(50);
+
+    std::cout << dclq << std::endl;
+    std::cout << "front: " << dclq.front() << std::endl;
+    std::cout << "back: " << dclq.back() << std::endl;
+    std::cout << "size: " << dclq.size() << std::endl;
+    // 出队
+    dclq.dequeue();
+    std::cout << dclq << std::endl;
+    std::cout << "front: " << dclq.front() << std::endl;
+    std::cout << "back: " << dclq.back() << std::endl;
+    std::cout << "size: " << dclq.size() << std::endl;
+
+    // 入队
+    dclq.enqueue(300);
+    std::cout << dclq << std::endl;
+    std::cout << "front: " << dclq.front() << std::endl;
+    std::cout << "back: " << dclq.back() << std::endl;
+    std::cout << "size: " << dclq.size() << std::endl;
+}
