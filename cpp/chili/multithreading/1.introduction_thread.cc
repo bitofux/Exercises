@@ -1,6 +1,6 @@
 /*
  * PROJECT : EXERCISES
- * FILE    : 1.introduction.cc
+ * FILE    : 1.introduction_thread.cc
  * AUTHOR  : bitofux
  * DATE    : 2026-07-28
  * BRIEF   : 介绍多线程
