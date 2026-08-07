@@ -16,7 +16,7 @@ int func(int n) {
 }
 
 int main() {
-    func(95);
+    std::cout << func(95) << std::endl;
 
     return 0;
 }

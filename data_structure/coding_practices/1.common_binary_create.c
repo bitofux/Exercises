@@ -21,7 +21,7 @@ struct node {
     struct node* right;
 };
 
-// 递归创建一颗普通二叉树
+// 树(非线形递归)递归创建一颗普通二叉树
 static void create(struct node** root) {
     if (root == NULL || *root != NULL) {
         return;
@@ -69,10 +69,52 @@ static void create(struct node** root) {
     *root = new_node;
 }
 
+// 左中右遍历
+void middle(struct node* node) {
+    if (node == NULL) {
+        return;
+    }
+
+    middle(node->left);
+
+    printf("%d\n", node->data);
+
+    middle(node->right);
+}
+
+// 左右中遍历
+void right(struct node* node) {
+    if (node == NULL) {
+        return;
+    }
+
+    middle(node->left);
+    middle(node->right);
+    printf("%d\n", node->data);
+}
+
+// left
+void left(struct node* node) {
+    if (node == NULL) {
+        return;
+    }
+
+    printf("%d\n", node->data);
+    middle(node->left);
+    middle(node->right);
+}
+
 int main() {
     struct node* root = NULL;
 
     create(&root);
+
+    // middle(root);
+
+    right(root);
+
+    // left(root);
+
 
     return 0;
 }
