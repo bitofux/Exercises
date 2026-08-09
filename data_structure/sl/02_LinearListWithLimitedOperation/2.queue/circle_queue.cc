@@ -11,8 +11,6 @@
 #include <random>
 #include <type_traits>
 
-using std::cout;
-using std::endl;
 
 class CircleQueue {
 public:
