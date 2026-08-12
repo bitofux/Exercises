@@ -1,11 +1,11 @@
 /*
  * PROJECT : EXERCISES
- * FILE    : 2.recursion.cc
+ * FILE    : 2.static_in_recursion.c
  * AUTHOR  : bitofux
  * DATE    : 2026-08-03
  * BRIEF   : 递归函数示例(静态变量)
  */
-#include <iostream>
+#include <stdio.h>
 
 // 无静态变量/全局变量
 int func(int n) {
@@ -27,9 +27,11 @@ int func_static(int n) {
     return 0;
 }
 
-int main() {
+int main(void) {
     int a = 5;
 
-    std::cout << "a: " << func(a) << std::endl;
-    std::cout << "a: " << func_static(a) << std::endl;
+    printf("a: %d\n", func(a));
+    printf("a: %d\n", func_static(a));
+
+    return 0;
 }

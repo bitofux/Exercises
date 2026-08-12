@@ -1,11 +1,11 @@
 /*
  * PROJECT : EXERCISES
- * FILE    : 4.indirect_recusion.cc
+ * FILE    : 4.indirect_recusion.c
  * AUTHOR  : bitofux
  * DATE    : 2026-08-05
  * BRIEF   :
  */
-#include <cstdio>
+#include <stdio.h>
 
 void funcB(int n);
 
