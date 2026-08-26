@@ -1,6 +1,6 @@
 /*
  * PROJECT : EXERCISES
- * FILE    : 1.recursion.c
+ * FILE    : 1.head_tail_recursion.c
  * AUTHOR  : bitofux
  * DATE    : 2026-08-01
  * BRIEF   : 递归示例

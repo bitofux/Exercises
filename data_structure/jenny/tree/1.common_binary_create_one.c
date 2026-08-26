@@ -1,6 +1,6 @@
 /*
  * PROJECT : EXERCISES
- * FILE    : 1.common_binary_create.c
+ * FILE    : 1.common_binary_create_one.c
  * AUTHOR  : bitofux
  * DATE    : 2026-08-02
  * BRIEF   : janny data struct 5.3 递归创建一颗普通的二叉树
@@ -69,39 +69,39 @@ static void create(struct node** root) {
     *root = new_node;
 }
 
-// 左中右遍历
-void middle(struct node* node) {
+// 中序遍历
+void in(struct node* node) {
     if (node == NULL) {
         return;
     }
 
-    middle(node->left);
+    in(node->left);
 
-    printf("%d\n", node->data);
+    printf("%d ", node->data);
 
-    middle(node->right);
+    in(node->right);
 }
 
-// 左右中遍历
-void right(struct node* node) {
+// 后序遍历
+void post(struct node* node) {
     if (node == NULL) {
         return;
     }
 
-    middle(node->left);
-    middle(node->right);
-    printf("%d\n", node->data);
+    post(node->left);
+    post(node->right);
+    printf("%d ", node->data);
 }
 
-// left
-void left(struct node* node) {
+// 前序遍历
+void pre(struct node* node) {
     if (node == NULL) {
         return;
     }
 
-    printf("%d\n", node->data);
-    middle(node->left);
-    middle(node->right);
+    printf("%d ", node->data);
+    pre(node->left);
+    pre(node->right);
 }
 
 int main() {
@@ -109,12 +109,17 @@ int main() {
 
     create(&root);
 
-    // middle(root);
+    // 前序遍历
+    pre(root);
+    printf("\n");
 
-    right(root);
+    // 后序遍历
+    post(root);
+    printf("\n");
 
-    // left(root);
-
+    // 中序遍历
+    in(root);
+    printf("\n");
 
     return 0;
 }
