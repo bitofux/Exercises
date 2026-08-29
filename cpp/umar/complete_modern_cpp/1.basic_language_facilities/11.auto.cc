@@ -32,6 +32,10 @@ void test1() {
     auto& ref_var = var;
     // ref_var = 10;// error
 
+    // 指向常量的指针
+    auto ptr_var = &var;
+    // *ptr_var = 30; // error
+
     // 初始化列表仅当花括号初始化器出现在赋值运算符右侧的时候才会被创建
     auto list  = {1,2,3,4};
 }
