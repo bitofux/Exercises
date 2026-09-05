@@ -9,17 +9,47 @@
 #include <random>
 #include <iostream>
 
+/*
+ * @brief 冒泡排序
+ *
+ * @param arr 需要排序的数组
+ * @param size 数组元素个数
+ */
 static void bubble_sort(int arr[], int size) {
     for (int i = 0; i < size - 1; ++i) {
         for (int j = 0; j < size - i - 1; ++j) {
             if (arr[j] > arr[j + 1]) {
                 int tmp = arr[j];
-                arr[j] = arr[j+1];
+                arr[j] = arr[j + 1];
                 arr[j + 1] = tmp;
             }
         }
     }
 }
+
+/*
+ * @brief 优化版的冒泡排序
+ * @param arr 需要排序的数组
+ * @param size 数组元素个数
+ */
+static void bubble_sort_opt(int arr[], int size) {
+    for (int i = 0; i < size - 1; ++i) {
+        bool flag = false;
+        for (int j = 0; j < size - i - 1; ++j) {
+            if (arr[j] > arr[j + 1]) {
+                int tmp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = tmp;
+                flag = true;
+            }
+        }
+
+        if (flag != true) {
+            break;
+        }
+    }
+}
+
 int main() {
     std::random_device rd;
     std::minstd_rand msr{rd()};
