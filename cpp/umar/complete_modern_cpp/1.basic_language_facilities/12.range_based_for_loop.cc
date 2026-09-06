@@ -6,6 +6,7 @@
  * BRIEF   : 基于范围的for循环
  */
 #include <iostream>
+#include <iterator>
 
 // 基于范围的for循环的内部实现伪代码
 void internal() {
@@ -22,14 +23,24 @@ void internal() {
         ++begin;
     }
 #endif
+#if 0
     auto &range = arr;
     // 获取数组中第一个元素的地址
-    auto begin = std::begin(arr);
+    auto begin = std::begin(range);
 
     // 获取数组中最后一个元素后一个的地址
-    auto end = std::end(arr);
+    auto end = std::end(range);
 
     for (;begin != end;++begin) {
+        auto v = *begin;
+        std::cout << v << " ";
+    }
+#endif
+    auto&& range = {1, 2, 3, 4, 5};
+    auto begin = std::begin(range);
+    auto end = std::end(range);
+
+    for (; begin != end; ++begin) {
         auto v = *begin;
         std::cout << v << " ";
     }
