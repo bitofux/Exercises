@@ -3,7 +3,7 @@
  * FILE    : selection_sort.cc
  * AUTHOR  : bitofux
  * DATE    : 2026-09-11
- * BRIEF   : 选择排序
+ * BRIEF   : 选择排序 -- selection_sort
  */
 #include <iostream>
 #include <random>

@@ -3,7 +3,7 @@
  * FILE    : insertion_sort.cc
  * AUTHOR  : bitofux
  * DATE    : 2026-09-12
- * BRIEF   : 插入排序
+ * BRIEF   : 插入排序 -- insertion_sort
  */
 #include <iostream>
 #include <random>
