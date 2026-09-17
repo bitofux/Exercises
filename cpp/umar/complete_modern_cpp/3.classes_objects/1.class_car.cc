@@ -8,10 +8,28 @@
 #include "1.class_car.hpp"
 #include <iostream>
 
+Car::Car() {
+    fuel = 0.0f;
+    speed = 0.0f;
+    passengers = 0;
+    std::cout << "Car()\n";
+}
+
+Car::Car(float amount) {
+    fuel = amount;
+    speed = 0.0f;
+    passengers = 0;
+    std::cout << "Car(float)\n";
+}
+
+Car::~Car() { std::cout << "~Car()\n"; }
+
 void Car::FillFuel(float amount) { fuel = amount; }
 
 void Car::Accelerate() {
+    // 增加速度的值
     speed++;
+    // 减少燃料的值
     fuel -= 0.5f;
 }
 

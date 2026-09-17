@@ -83,11 +83,6 @@ void shell_sort(int arr[], int size) {
 void shell_sort_one(int arr[], int size) {
     int gap = size / 2;
     while (gap != 0) {
-        // 要记住第一组数据下标是0 7 14，0 7 之间也是要先选择下标0为有序，将7与0比较，随后决定插入
-        // 随后再选择 0
-        // 7作为有序，将14与0和7分别比较，随后决定插入，而采用的思路就是插入排序算法思想
-        // 中不是次数角度，而是后一个位置上的数据为思考角度，这就很简单了
-        // 将每一次gao后的各个分组数据看作是每次需要进行插入排序的数据，本质还是插入排序
         for (int i = gap; i < size; ++i) {
             int val = arr[i];
             int j = i - gap;
@@ -104,7 +99,7 @@ void shell_sort_one(int arr[], int size) {
 }
 
 int main() {
-// #if 0
+    // #if 0
     std::random_device rd;
     std::minstd_rand msr{rd()};
     std::uniform_int_distribution<> distrib{1, 100};
@@ -118,7 +113,7 @@ int main() {
         std::cout << var << " ";
     }
     std::cout << "\n";
-// #endif
+    // #endif
     // int arr[15] = {58, 81, 95, 64, 21, 25, 82, 8, 15, 26, 75, 8, 7, 88, 85};
     shell_sort_one(arr, sizeof(arr) / sizeof(arr[0]));
 
