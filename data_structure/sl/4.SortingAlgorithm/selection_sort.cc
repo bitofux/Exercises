@@ -9,13 +9,11 @@
 #include <random>
 
 void selection_sort(int arr[], int size) {
-    int min = -1;
-    int idx = -1;
     for (int index = 0; index < size - 1; ++index) {
         // 选择特定位置上的数据将其赋值给min
-        min = arr[index];
+        int min = arr[index];
         // 同步更新idx
-        idx = index;
+        int idx = index;
         for (int j = index + 1; j < size; ++j) {
             if (min > arr[j]) {
                 // 将最小值赋值给min，便于后续比较
