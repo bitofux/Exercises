@@ -11,11 +11,11 @@
 class Car {
 private:
     // 燃油量
-    float fuel;
+    float fuel{0};  // 非静态数据成员初始化器
     // 速度
-    float speed;
+    float speed{0.0f};
     // 乘客数量
-    int passengers;
+    int passengers{10};
 
 public:
     // 无参构造函数

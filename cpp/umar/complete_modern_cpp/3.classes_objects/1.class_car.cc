@@ -9,16 +9,17 @@
 #include <iostream>
 
 Car::Car() {
-    fuel = 0.0f;
-    speed = 0.0f;
-    passengers = 0;
+    // fuel = 0.0f;
+    // speed = 0.0f;
+    // passengers = 0;
     std::cout << "Car()\n";
 }
 
 Car::Car(float amount) {
-    fuel = amount;
-    speed = 0.0f;
-    passengers = 0;
+    // this指针访问类内非静态数据成员
+    this->fuel = amount;
+    // speed = 0.0f;
+    // passengers = 0;
     std::cout << "Car(float)\n";
 }
 
