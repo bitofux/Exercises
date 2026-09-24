@@ -17,6 +17,9 @@ private:
     // 乘客数量
     int passengers{10};
 
+    // 静态成员变量
+    static int totalCars;
+
 public:
     // 无参构造函数
     Car();
@@ -33,5 +36,8 @@ public:
     // 增加乘客
     void AddPassengers(int count);
     // 查看汽车状态
-    void Dashboard();
+    void Dashboard () const;
+
+    // 查看对象个数
+    static void ShowCount();
 };

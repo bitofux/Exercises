@@ -8,9 +8,13 @@
 #include "1.class_car.hpp"
 
 int main() {
-    Car car_one;
+    Car::ShowCount();
+
+    const Car car_one;
     car_one.Dashboard();
+    Car::ShowCount();
 
     Car car_two{10.2f};
     car_two.Dashboard();
+    Car::ShowCount();
 }
