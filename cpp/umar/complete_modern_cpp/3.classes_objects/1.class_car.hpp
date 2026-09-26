@@ -25,6 +25,8 @@ public:
     Car();
     // 参数化构造函数
     Car(float amount);
+
+    Car(float amount, int pass);
     // 析构函数
     ~Car();
     // 加油
@@ -36,7 +38,7 @@ public:
     // 增加乘客
     void AddPassengers(int count);
     // 查看汽车状态
-    void Dashboard () const;
+    void Dashboard() const;
 
     // 查看对象个数
     static void ShowCount();
