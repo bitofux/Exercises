@@ -37,6 +37,7 @@ int partition(int* arr, int lower, int upper) {
 }
 
 int partition_one(int* arr, int start, int end) {
+    /* 基准数选择的优化：三数取中*/
     int pivot = arr[start];
     while (start < end) {
         while (arr[end] > pivot) {
@@ -67,6 +68,8 @@ void quick_sort(int* arr, int begin, int end) {
     if (begin >= end) {
         return;
     }
+
+    /*[start,end]小于等于一定范围内使用插入排序*/
 
     int pos = partition_one(arr, begin, end);
     quick_sort(arr, begin, pos - 1);

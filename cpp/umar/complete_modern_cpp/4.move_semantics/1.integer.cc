@@ -6,6 +6,7 @@
  * BRIEF   :
  */
 #include <iostream>
+#include <utility>
 
 class Integer {
 private:
@@ -29,7 +30,7 @@ public:
     }
     // 拷贝赋值运算符重载函数
     Integer& operator=(const Integer& other) {
-        std::cout << "Integer(const Integer&)\n";
+        std::cout << "operator=(const Integer&)\n";
         if (this != &other) {
             *ptr_ = *other.ptr_;
         }
@@ -43,7 +44,7 @@ public:
     }
     // 移动赋值运算符重载函数
     Integer& operator=(Integer&& other) {
-        std::cout << "Integer(Integer&&)\n";
+        std::cout << "operator=(Integer&&)\n";
         if (this != &other) {
             delete ptr_;
             ptr_ = other.ptr_;
@@ -55,7 +56,10 @@ public:
     int GetValue() const { return *ptr_; }
     void SetValue(int value) { *ptr_ = value; }
     const int* GetData() const { return ptr_; }
-    ~Integer() { delete ptr_; }
+    ~Integer() {
+        std::cout << "~Integer()\n";
+        delete ptr_;
+    }
 };
 
 class Number {
@@ -65,6 +69,12 @@ private:
 public:
     Number(int value)
         : i_value_{value} {}
+
+    // Number(const Number& obj) = default;
+    // Number& operator=(const Number& obj) = default;
+    // Number(Number&& obj) = default;
+    // Number& operator=(Number&&) = default;
+    ~Number() = default;
 };
 
 Integer add(Integer& a, Integer& b) {
@@ -74,9 +84,36 @@ Integer add(Integer& a, Integer& b) {
     return tmp;
 }
 
+Integer add(int a, int b) {
+    // Integer temp{a + b};
+    return Integer{a + b};
+}
+
+void test() {
+    Integer a = add(3, 4);
+    return;
+}
+
+void test1() {
+    Integer a{3};
+    auto b{std::move(a)};
+}
+
+Number CreateNumber(int value) {
+    Number n{value};
+    return n;
+}
 int main() {
+#if 0
     Number n1{10};
     auto n2{n1};
 
+    n2 = n1;
+
+    auto n3{CreateNumber(10)};
+    n3 = CreateNumber(20);
+
     return 0;
+#endif
+    test1();
 }
