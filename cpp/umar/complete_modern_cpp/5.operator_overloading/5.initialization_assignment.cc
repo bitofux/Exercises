@@ -15,11 +15,33 @@ private:
     Integer id_;
 
 public:
-    Product(const Integer& id) {
+    Product(const Integer& id)
+        : id_{id} {
         std::cout << "Product(const Integer&)" << std::endl;
-        id_ = id;
+        // id_ = id;
     }
     ~Product() { std::cout << "~Product()" << std::endl; }
+
+    const Integer& GetInteger() const { return id_; }
+
+    // 类型转换操作符
+    // operator Integer() { return id_; }
+
+    friend class Integer;
 };
 
-int main() { Product p{5}; }
+Integer::Integer(const Product& other)
+    : ptr_{new int{other.id_.GetValue()}} {
+    std::cout << "Integer(const Product&)" << std::endl;
+}
+
+int main() {
+    Product p{5};
+    Integer id = p;
+
+    if (id == p.GetInteger()) {
+        std::cout << "id  == p" << std::endl;
+    }
+
+    return 0;
+}

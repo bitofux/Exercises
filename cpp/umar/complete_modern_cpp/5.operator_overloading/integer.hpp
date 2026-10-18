@@ -13,6 +13,8 @@
 #include <istream>
 #include <ostream>
 
+class Product;
+
 class Integer {
 private:
     int* ptr_;
@@ -20,12 +22,16 @@ private:
 public:
     // 默认构造函数
     Integer()
-        : ptr_{nullptr} {}
+        : ptr_{nullptr} {
+        std::cout << "Integer()" << std::endl;
+    }
     // 参数化构造函数
     Integer(int value)
         : ptr_{new int{value}} {
         std::cout << "Integer(int)\n";
     }
+
+    Integer(const Product& other);
 
     // 拷贝构造函数
     Integer(const Integer& other) {
